@@ -3,6 +3,12 @@
 dns server without dnssec  #see how server and client respond
 dns server with dnssec      #see how server and client respond
 kali linux send false dns respons, and see if dnssec works
+drwxr-sr-x 2 root bind 4096 Feb  7 19:49 zones  #zones direcotry
+-rw-r--r-- 1 root bind 455 Feb  7 19:38 0.0.10.in-addr.arpa
+-rw-r--r-- 1 root bind 501 Feb  7 19:38 netnadiif.onlin
+
+bind has to own keys direcotry
+drwxr-sr-x 2 bind bind 4096 Feb  7 20:28 keys
 
 ## To do Steps
 - Create zones directory with correct owner & permissions
@@ -20,6 +26,8 @@ kali linux send false dns respons, and see if dnssec works
 - Veryfiy that dnssec is working externaly
 - view signed zone file
 
+
+
 ### Create zones directory with correct owner & permission
 ```linux
 cd /etc/bind
@@ -27,6 +35,9 @@ sudo mkdir zones
 sudo chown -R bind zones && sudo -R chgrp bind zones
 sudo chmod -R 755 zones
 ```
+
+
+
 ### Create keys directory with correct owners & permissions
 ```linux
 cd /etc/bind
@@ -34,6 +45,8 @@ sudo mkdir keys
 sudo chown -R bind keys && sudo -R chgrp bind keys
 sudo chmod -R 755 bind
 ```
+
+
 
 ### Configure named.conf
 ```linux
@@ -54,6 +67,8 @@ zone "0.0.10.in-addr.arpa" {
 
 };
 ```
+
+
 
 ### Configure named.conf.options
 ```linux
@@ -100,7 +115,7 @@ logging {
 
 
 
-### configure forward zone
+### Configure forward zone
 ```linux
 $TTL 300
 $ORIGIN netsare.com.
@@ -126,7 +141,7 @@ dnssec.netsare.com.		IN		A		10.0.0.253
 ```
 
 
-### configure reverse zone
+### onfigure reverse zone
 ```linux
 $TTL 300
 $ORIGIN 0.0.10.in-addr.arpa.
