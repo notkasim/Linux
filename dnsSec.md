@@ -36,7 +36,38 @@ sudo chmod -R 755 bind
 
 ### Configure named.conf
 ```linux
+// This is the primary configuration file for the BIND DNS server named.
 
+include "/etc/bind/named.conf.options";
+include "/etc/bind/named.conf.local";
+include "/etc/bind/named.conf.default-zones";
+
+// Forawd zone
+zone "example.com" {
+        type master;
+        file "/etc/bind/zones/example.com";
+
+        // DNSSEC
+// Fully Automated (Key and Signing Policy) - !! strongly recommended
+        dnssec-policy default;
+// Location of dnssec keys
+        key-directory "/etc/bind/keys";
+        inline-signing yes;
+
+};
+
+// Reverse zone
+zone "0.0.10.in-addr.arpa" {
+        type master;
+        file "/etc/bind/zones/0.0.10.in-addr.arpa";
+
+        // DNSSEC
+// Fully Automated (Key and Signing Policy) - !! strongly recommended
+        dnssec-policy default;
+// Location of dnssec keys
+        key-directory "/etc/bind/keys";
+        inline-signing yes;
+};
 ```
 
 
