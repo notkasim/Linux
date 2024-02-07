@@ -5,19 +5,20 @@ dns server with dnssec      #see how server and client respond
 kali linux send false dns respons, and see if dnssec works
 
 ## To do Steps
-1. Create zones directory with correct owner & permissions
-2. Create keys directory with correct owner & permissions 
-3. Configure named.conf
-4. Configure named.conf.options
-5. configure forward zone
-6. configure reverse zone
-7. configure Apparmor
-8. Reload bind9 and sign the zone file
-9. Test localy to make sure dnssec works
-10. Generate DS (Delegation signer) key required som domain registrar
-11. Update domain registrar with the DS key so that it publishes our domain as dnssec enabled
-12. Veryfiy that dnssec is working externaly
-13. view signed zone file
+- Create zones directory with correct owner & permissions
+- Create keys directory with correct owner & permissions
+- Create log file
+- Configure named.conf
+- Configure named.conf.options
+- configure forward zone
+- configure reverse zone
+- configure Apparmor
+- Reload bind9 and sign the zone file
+- Test localy to make sure dnssec works
+- Generate DS (Delegation signer) key required som domain registrar
+- Update domain registrar with the DS key so that it publishes our domain as dnssec enabled
+- Veryfiy that dnssec is working externaly
+- view signed zone file
 
 ### Create zones directory with correct owner & permission
 ```linux
@@ -42,40 +43,111 @@ include "/etc/bind/named.conf.options";
 include "/etc/bind/named.conf.local";
 include "/etc/bind/named.conf.default-zones";
 
-// Forawd zone
-zone "example.com" {
+zone "netsare.com" {
         type master;
-        file "/etc/bind/zones/example.com";
-
-        // DNSSEC
-// Fully Automated (Key and Signing Policy) - !! strongly recommended
-        dnssec-policy default;
-// Location of dnssec keys
-        key-directory "/etc/bind/keys";
-        inline-signing yes;
-
+        file "/etc/bind/zones/netsare.com";
 };
 
-// Reverse zone
 zone "0.0.10.in-addr.arpa" {
         type master;
         file "/etc/bind/zones/0.0.10.in-addr.arpa";
 
-        // DNSSEC
-// Fully Automated (Key and Signing Policy) - !! strongly recommended
-        dnssec-policy default;
-// Location of dnssec keys
-        key-directory "/etc/bind/keys";
-        inline-signing yes;
+};
+```
+
+### Configure named.conf.options
+```linux
+acl ask_acl {
+        localhost;
+        localnets;
+        10.0.0.0/24;
+        193.10.160.0/23;
+};
+
+
+options {
+        directory "/etc/bind/cache";
+        recursion yes;
+        allow-query { ask_acl; };
+        allow-query-cache { ask_acl; };
+
+        forwarders {
+                1.1.1.1;
+        };
+
+        dnssec-validation yes;
+
+//      listen-on-v6 port 53 { ::1; };                  // If you wish to use IPV6 uncomment this line
+        listen-on port 53 { 127.0.0.1; 10.0.0.215; };   // Change the IP-address to the IP-address of the DNS server
+};
+
+logging {
+        channel bind_log {
+                file "/var/log/named/bind.log" versions 3 size 250k;
+                severity info;
+                print-time yes;
+                print-category yes;
+                print-severity yes;
+        };
+        category default {
+                bind_log;
+        };
+        category queries {
+                bind_log;
+        };
 };
 ```
 
 
 
-```
+### configure forward zone
+```linux
+$TTL 300
+$ORIGIN netsare.com.
+
+@       IN      SOA     ns1.netsare.com.     info.netsare.com. (
+
+        20240208;       serial
+        4H;             refresh (4400)
+        1H;             retry (3600)
+        1W;             expire (604800)
+        1H;             minimum (3600)
+)
+
+
+; NAME SERVERS
+@       IN      NS      ns1.netsare.com.
+ns1     IN      A       10.0.0.215
+
+
+; WEB SERVER
+www.netsare.com.		IN      A       10.0.0.254
+dnssec.netsare.com.		IN		A		10.0.0.253
 ```
 
+
+### configure reverse zone
+```linux
+$TTL 300
+$ORIGIN 0.0.10.in-addr.arpa.
+@       IN      SOA     ns1.netsare.com.       info.netsare.com. (
+
+        20240205; serial
+        4H; refresh (14400)
+        1H; retry (3600)
+        1W; expire (604800)
+        1H; minimum (3600)
+)
+
+; MAGAC SERVER
+@       IN      NS      ns1.netsare.com.
+215     IN      PTR     ns1.netsare.com.
+
+; WEB SERVERS
+254     IN      PTR     www.netsare.com.
+253		IN		PTR		dnssec.netsare.com.		
 ```
-```
-```
+
+
+
 ```
