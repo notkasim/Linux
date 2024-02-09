@@ -10,6 +10,8 @@ drwxr-sr-x 2 root bind 4096 Feb  7 19:49 zones  #zones direcotry
 bind has to own keys direcotry
 drwxr-sr-x 2 bind bind 4096 Feb  7 20:28 keys
 
+when configuring dnssec the zones direcotry needs to be owen by bind. or test to give bind group rwx to see if that helps.
+
 ## To do Steps
 - Create zones directory with correct owner & permissions
 - Create keys directory with correct owner & permissions
