@@ -1,0 +1,41 @@
+# Network configuration file is located at: /etc/netplan direcotry.
+# The file should start with a number (00) and end with .yaml
+
+#configuration can applied using:
+  root@ubuntu:~# netplan apply -- apply the current netplan config
+  root@ubuntu:~# netplan try -- try the changes before permanently applying, with automatic rollback  
+
+
+#DHCPv4 config
+network:
+  ethernets:
+    eth0:
+    dhcp4: true
+  version: 2
+
+
+#Static config
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses: [10.0.0.99/24]
+      gateway4: 10.0.0.1
+      nameservers:
+        addresses: [1.1.1.1]
+
+
+#Static config
+network:
+  version: 2
+  ethernets:
+    eth0:
+      addresses:
+        - 10.0.0.100/24
+      routes:
+        - to: default
+          via: 10.0.0.1
+      nameservers:
+        addresses: [1.1.1.1,8.8.8.8]
+  
+    
