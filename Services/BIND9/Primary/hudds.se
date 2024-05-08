@@ -1,0 +1,23 @@
+$TTL 300
+$ORIGIN hudds.se.
+
+;Start of Authority
+@       IN      SOA     ns1.hudds.se.   info.hudds.se. (
+
+                20240401                ;serial number
+                60                      ;refresh
+                60                      ;update retry
+                120                     ;expire
+                120                     ;minimum
+)
+
+;NAME SERVER
+@       IN      NS      ns1.hudds.se.
+ns1     IN      A       10.0.0.50
+ns2     IN      A       10.0.0.51
+
+; WEB SERVERS
+www.websida1    IN      CNAME   hudds.se.
+www.websida2    IN      CNAME   hudds.se.
+@       IN      A       10.0.0.30
+@       IN      A       10.0.0.31

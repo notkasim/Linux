@@ -1,0 +1,44 @@
+//This is the options configurations file for the secondary BIND DNS server
+//========================================================================
+
+// ACL for trusted hosts and networks
+acl trusted {
+                10.0.0.50;              #ns1
+                10.0.0.51;              #ns2
+                10.0.0.0/24;    #local network
+};
+//========================================================================
+
+options {
+        directory "/var/cache/bind";
+        recursion yes;                                  #enables recursive query
+        allow-recursion {trusted; };    #only allows recursive queries from "trusted" acl
+        allow-query {trusted; };                #only allows query from "trusted" acl
+        allow-query-cache {trusted; };  #trusted acl is allowed to access the servers cache
+        listen-on port 53 {10.0.0.51;};
+
+
+        forwarders {
+                1.1.1.1;        #public dns resolver
+                8.8.8.8;        #public dns resolver
+                };
+};
+//========================================================================
+
+logging {
+                channel bind_log {
+                                file "/var/log/named/bind.log" versions 3 size 250k;
+                                severity info;
+                                print-time yes;
+                                print-category yes;
+                                print-severity yes;
+                };
+                category default {
+                                bind_log;
+                };
+                category queries {                      #log queries
+                                bind_log;
+                };
+
+};
+//========================================================================

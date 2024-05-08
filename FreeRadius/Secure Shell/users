@@ -1,0 +1,4 @@
+#USERNAME   Cleartext-Password := "PASSWORD"
+#--------------------------------------------
+kasim   Cleartext-Password := "nics"
+kasmoh  Cleartext-Password := "Junics-124"

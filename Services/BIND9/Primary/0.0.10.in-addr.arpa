@@ -1,0 +1,23 @@
+$TTL 300
+$ORIGIN 0.0.10.in-addr.arpa.
+
+
+@       IN      SOA     ns1.hudds.se.   info.hudds.se. (
+
+                20240401                ;serial number
+                60                      ;refresh
+                60                      ;update retry
+                120                     ;expire
+                120                     ;minimum
+)
+
+;NAME SERVER
+@               IN              NS              ns1.hudds.se.
+50              IN              PTR             ns1.hudds.se.
+51              IN              PTR             ns2.hudds.se.
+
+; WEB SERVER
+30      IN      PTR     www.websida1.hudds.se.
+30      IN      PTR     www.websida2.hudds.se.
+31      IN      PTR     www.websida1.hudds.se.
+31      IN      PTR     www.websida2.hudds.se.	

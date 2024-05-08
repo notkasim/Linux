@@ -48,4 +48,3 @@ curl http://[2a02:1406:b:d693:215:5dff:fe00:a11]
 
 ###### Surv to a website via ipv6
 http://[2a02:1406:b:d693:215:5dff:fe00:a11]
-
